@@ -1,4 +1,5 @@
 ﻿using Authentication.Context;
+using Authentication.Helpers;
 using Authentication.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -43,6 +44,9 @@ namespace Authentication.Controllers
             {
                 return BadRequest();
             }
+            userObj.Password = PasswordHasher.HashPassword(userObj.Password);
+            userObj.Role = "User";
+            userObj.Token = "";
             await _authentificationDbContext.Users.AddAsync(userObj);
             await _authentificationDbContext.SaveChangesAsync();
 
