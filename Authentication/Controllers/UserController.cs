@@ -25,10 +25,15 @@ namespace Authentication.Controllers
                 return BadRequest();
             }
             var user = await _authentificationDbContext.Users
-                .FirstOrDefaultAsync(x => x.Username == userObj.Username && x.Password == userObj.Password);
+                .FirstOrDefaultAsync(x => x.Username == userObj.Username);
             if (user == null)
             {
                 return NotFound(new {Message = "User Not Found!" });
+            }
+
+            if (!PasswordHasher.VerifyPassword(userObj.Password, user.Password))
+            {
+                return BadRequest(new { Message = "Password is Incorrect!" });
             }
 
             return Ok(new
